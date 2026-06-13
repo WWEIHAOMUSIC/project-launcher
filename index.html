@@ -342,11 +342,7 @@ function render(category) {
       }
     }
     if (p.category === 'git' && p.port && !p.running) {
-      if (p.name === 'ai-goofish-monitor') {
-        actions += `<button class="abtn abtn-red" onclick="runDocker()">▶ 启动</button>`;
-      } else {
-        actions += `<button class="abtn abtn-red" onclick="alert('请在终端手动启动此项目')">▶ 启动</button>`;
-      }
+      actions += `<button class="abtn abtn-red" onclick="alert('请在终端手动启动此项目')">▶ 启动</button>`;
     }
 
     return `
@@ -366,14 +362,7 @@ function render(category) {
 }
 
 function runApp(appPath) {
-  if (appPath === '/Applications/Docker.app') {
-    window.location.href = 'open -a Docker'; // fallback
-    fetch('/api/launch?app=' + encodeURIComponent('/Applications/Docker.app'));
-  }
-}
-
-function runDocker() {
-  fetch('/api/launch?docker=' + encodeURIComponent('ai-goofish-monitor'));
+  fetch('/api/launch?app=' + encodeURIComponent(appPath));
 }
 
 async function scan() {
