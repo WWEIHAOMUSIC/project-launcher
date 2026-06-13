@@ -4,7 +4,7 @@
 
 自动扫描 Git 仓库、Docker 容器、Homebrew 应用和收藏项目，生成漂亮的本地 Web 面板。
 
-![Screenshot](https://via.placeholder.com/800x500?text=Project+Launcher+Screenshot)
+![Screenshot](./screenshot.png)
 
 ## ✨ 功能
 
