@@ -3,3 +3,6 @@ __pycache__/
 projects.json
 .DS_Store
 *.log
+*.sublime-workspace
+thumbs.db
+*.pyc
