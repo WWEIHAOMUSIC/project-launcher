@@ -1,0 +1,29 @@
+# Project Launcher - macOS 开机自启配置
+# 复制到 ~/Library/LaunchAgents/ 并修改路径后加载
+#
+# 使用方法:
+#   1. 修改下面的 /path/to/project-launcher 为你的实际路径
+#   2. cp com.project-launcher.plist ~/Library/LaunchAgents/
+#   3. launchctl load ~/Library/LaunchAgents/com.project-launcher.plist
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.project-launcher</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/path/to/project-launcher/server.py</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/project-launcher.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/project-launcher-err.log</string>
+</dict>
+</plist>

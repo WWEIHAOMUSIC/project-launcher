@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📦 开源项目启动器</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, 'PingFang SC', system-ui, sans-serif;
+    background: #09090f;
+    color: #e8e8ec;
+    min-height: 100vh;
+    line-height: 1.5;
+    background-image: 
+      radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 0% 50%, rgba(168,85,247,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 100% 50%, rgba(59,130,246,0.04) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+  /* ===== HEADER ===== */
+  .header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 28px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    background: rgba(9,9,15,0.8); backdrop-filter: blur(16px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; box-shadow: 0 0 20px rgba(99,102,241,0.3);
+  }
+  .header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+  .header-sub { font-size: 11px; color: #666; margin-top: 1px; }
+
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .refresh-btn {
+    padding: 7px 16px; background: rgba(99,102,241,0.15);
+    color: #818cf8; border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .refresh-btn:hover { background: rgba(99,102,241,0.25); }
+  .refresh-btn:active { transform: scale(0.96); }
+
+  /* ===== SYSTOLIC ===== */
+  .sys-bar {
+    display: flex; gap: 10px; padding: 12px 28px;
+    overflow-x: auto; flex-wrap: nowrap;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    background: rgba(9,9,15,0.4);
+  }
+  .sys-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px; white-space: nowrap;
+    font-size: 12px; color: #888; flex-shrink: 0;
+  }
+  .sys-item .label { color: #555; margin-right: 2px; }
+  .sys-item .val { color: #ccc; font-weight: 600; }
+  .sys-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+  }
+  .dot-green { background: #4ade80; box-shadow: 0 0 6px rgba(74,222,128,0.4); }
+  .dot-gray { background: #555; }
+
+  /* ===== CATEGORY TABS ===== */
+  .tabs {
+    display: flex; gap: 4px; padding: 16px 28px 0;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 8px 16px; background: transparent;
+    color: #666; border: none; cursor: pointer; font-size: 13px; font-weight: 500;
+    border-radius: 8px 8px 0 0; transition: all 0.15s; position: relative;
+  }
+  .tab:hover { color: #999; background: rgba(255,255,255,0.02); }
+  .tab.active { 
+    color: #e8e8ec; background: rgba(255,255,255,0.03);
+  }
+  .tab.active::after {
+    content: ''; position: absolute; bottom: 0; left: 25%; width: 50%;
+    height: 2px; background: #6366f1; border-radius: 1px;
+  }
+  .tab .count {
+    display: inline-block; margin-left: 6px; padding: 1px 7px;
+    background: rgba(255,255,255,0.06); border-radius: 10px;
+    font-size: 11px; font-weight: 600; color: #888;
+  }
+
+  /* ===== GRID ===== */
+  .content { padding: 16px 28px 40px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 14px;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 18px; position: relative;
+    transition: all 0.2s; overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+  .card:hover::before { opacity: 1; }
+
+  .card-top {
+    display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px;
+  }
+  .card-icon {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .card-info { flex: 1; min-width: 0; }
+  .card-name { 
+    font-size: 15px; font-weight: 700; color: #e8e8ec;
+    display: flex; align-items: center; gap: 8px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-desc {
+    font-size: 12px; color: #777; margin-top: 3px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; line-height: 1.5;
+  }
+
+  /* Badge */
+  .badge {
+    flex-shrink: 0; margin-left: auto;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.02em;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .b-running { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.15); }
+  .b-installed { background: rgba(99,102,241,0.1); color: #818cf8; border: 1px solid rgba(99,102,241,0.12); }
+  .b-web { background: rgba(56,189,248,0.1); color: #38bdf8; border: 1px solid rgba(56,189,248,0.12); }
+  .b-pending { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.12); }
+  .b-stopped { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.12); }
+  .b-deleted { background: rgba(160,160,160,0.1); color: #999; border: 1px solid rgba(160,160,160,0.12); }
+
+  .dot-pulse {
+    display: inline-block; width: 5px; height: 5px;
+    background: #4ade80; border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.3)} }
+
+  /* Meta */
+  .card-meta {
+    font-size: 11px; color: #555; line-height: 1.8;
+    display: flex; flex-wrap: wrap; gap: 4px 12px;
+  }
+  .tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 2px 8px; background: rgba(255,255,255,0.04);
+    border-radius: 4px; font-size: 11px; color: #888;
+  }
+  .tag-star { color: #fbbf24; }
+
+  /* Actions */
+  .card-actions {
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .abtn {
+    padding: 5px 12px; border-radius: 6px;
+    font-size: 11px; font-weight: 600; text-decoration: none;
+    cursor: pointer; border: none; transition: all 0.1s;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .abtn-primary { background: rgba(99,102,241,0.12); color: #818cf8; }
+  .abtn-primary:hover { background: rgba(99,102,241,0.2); }
+  .abtn-green { background: rgba(74,222,128,0.1); color: #4ade80; }
+  .abtn-green:hover { background: rgba(74,222,128,0.18); }
+  .abtn-red { background: rgba(248,113,113,0.1); color: #f87171; }
+  .abtn-red:hover { background: rgba(248,113,113,0.18); }
+  .abtn-gh { background: rgba(255,255,255,0.04); color: #888; }
+  .abtn-gh:hover { background: rgba(255,255,255,0.08); color: #ccc; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 60px 20px; color: #555; }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-text { font-size: 14px; }
+
+  /* Loader */
+  .loading {
+    text-align: center; padding: 60px; color: #555;
+    font-size: 13px;
+  }
+  .spinner {
+    display: inline-block; width: 24px; height: 24px;
+    border: 2px solid rgba(99,102,241,0.15);
+    border-top-color: #6366f1; border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text { margin-top: 10px; }
+
+  .footer {
+    padding: 16px 28px; border-top: 1px solid rgba(255,255,255,0.03);
+    font-size: 11px; color: #444; text-align: center;
+  }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    .header { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
+    .sys-bar { padding: 10px 16px; }
+    .tabs { padding: 12px 16px 0; }
+    .content { padding: 12px 16px 40px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">⌘</div>
+    <div>
+      <h1>项目启动器</h1>
+      <div class="header-sub" id="hostname"></div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="refresh-btn" onclick="scan()">⟳ 刷新扫描</button>
+  </div>
+</div>
+
+<div class="sys-bar" id="sysBar"></div>
+
+<div class="tabs" id="tabs"></div>
+
+<div class="content">
+  <div class="grid" id="grid">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div class="loading-text">扫描本地项目…</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">⚡ 自动扫描 · 实时检测 · 一键启动</div>
+
+<script>
+let allProjects = [];
+
+const STATUS_LABELS = {
+  running: '运行中', installed: '已安装', web: '网页',
+  pending: '待安装', stopped: '已停止', deleted: '已删除'
+};
+const STATUS_CLASSES = {
+  running: 'b-running', installed: 'b-installed', web: 'b-web',
+  pending: 'b-pending', stopped: 'b-stopped', deleted: 'b-deleted'
+};
+const CATEGORIES = {
+  all: '全部', local: '本地项目', git: 'Git 仓库',
+  docker: 'Docker 容器', app: '桌面应用', web: '已收藏'
+};
+
+function formatPort(port) {
+  return port ? `<a href="http://localhost:${port}" target="_blank" style="color:#6366f1;text-decoration:none">localhost:${port}</a>` : '';
+}
+
+function render(category) {
+  const cat = category || 'all';
+  const filtered = cat === 'all' ? allProjects : allProjects.filter(p => p.category === cat);
+
+  // Tabs
+  const counts = { all: allProjects.length };
+  allProjects.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
+  document.getElementById('tabs').innerHTML = Object.entries(CATEGORIES).map(([k, label]) => {
+    const cnt = counts[k] || 0;
+    if (cnt === 0 && k !== 'all') return '';
+    return `<button class="tab ${k === cat ? 'active' : ''}" data-cat="${k}">${label}<span class="count">${cnt}</span></button>`;
+  }).join('');
+  
+  document.querySelectorAll('.tab').forEach(el => {
+    el.onclick = () => render(el.dataset.cat);
+  });
+
+  // Cards
+  if (filtered.length === 0) {
+    document.getElementById('grid').innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">这个分类暂时没有项目</div></div>';
+    return;
+  }
+
+  document.getElementById('grid').innerHTML = filtered.map(p => {
+    const bc = STATUS_CLASSES[p.status] + (p.running ? ' b-running' : '');
+    const sl = STATUS_LABELS[p.status];
+    const dot = p.running ? '<span class="dot-pulse"></span>' : '';
+
+    let meta = '';
+    if (p.stars) meta += `<span class="tag tag-star">★ ${p.stars}</span>`;
+    if (p.stack) meta += `<span class="tag">${p.stack}</span>`;
+    if (p.mtime) meta += `<span class="tag">${p.mtime}</span>`;
+    if (p.port) meta += `<span class="tag">🔌 port ${p.port}</span>`;
+
+    let actions = '';
+    if (p.port && p.running) {
+      actions += `<a class="abtn abtn-green" href="http://localhost:${p.port}" target="_blank">⚡ 打开服务</a>`;
+    }
+    if (p.webUrl) {
+      actions += `<a class="abtn abtn-primary" href="${p.webUrl}" target="_blank">🌐 打开</a>`;
+    }
+    if (p.github) {
+      const gh = p.github.replace('.git','');
+      actions += `<a class="abtn abtn-gh" href="${gh}" target="_blank">GitHub ↗</a>`;
+    }
+    if (p.path && p.path.startsWith('/Applications/')) {
+      const appName = p.path.replace('/Applications/','').replace('.app','');
+      if (appName === 'Docker') {
+        actions += `<button class="abtn abtn-primary" onclick="runApp('${p.path}')">▶ 启动 Docker</button>`;
+      } else {
+        actions += `<a class="abtn" href="${p.path}">打开 App</a>`;
+      }
+    }
+    if (p.category === 'git' && p.port && !p.running) {
+      if (p.name === 'ai-goofish-monitor') {
+        actions += `<button class="abtn abtn-red" onclick="runDocker()">▶ 启动</button>`;
+      } else {
+        actions += `<button class="abtn abtn-red" onclick="alert('请在终端手动启动此项目')">▶ 启动</button>`;
+      }
+    }
+
+    return `
+    <div class="card">
+      <div class="card-top">
+        <div class="card-icon">${p.icon}</div>
+        <div class="card-info">
+          <div class="card-name">${p.name}</div>
+          <div class="card-desc">${p.desc || ''}</div>
+        </div>
+        <span class="badge ${bc}">${dot}${sl}</span>
+      </div>
+      <div class="card-meta">${meta}</div>
+      ${actions ? '<div class="card-actions">'+actions+'</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function runApp(appPath) {
+  if (appPath === '/Applications/Docker.app') {
+    window.location.href = 'open -a Docker'; // fallback
+    fetch('/api/launch?app=' + encodeURIComponent('/Applications/Docker.app'));
+  }
+}
+
+function runDocker() {
+  fetch('/api/launch?docker=' + encodeURIComponent('ai-goofish-monitor'));
+}
+
+async function scan() {
+  document.getElementById('grid').innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">🔄 正在扫描…</div></div>';
+  try {
+    const resp = await fetch('/api/scan');
+    if (resp.ok) {
+      const data = await resp.json();
+      allProjects = data.projects || [];
+      render('all');
+      // Sys info
+      if (data.system) {
+        const sys = data.system;
+        let bar = '';
+        bar += `<div class="sys-item"><span class="sys-dot ${sys.docker ? 'dot-green' : 'dot-gray'}"></span>${sys.hostname}</div>`;
+        if (sys.uptime) bar += `<div class="sys-item"><span class="label">运行</span><span class="val">${sys.uptime}</span></div>`;
+        if (sys.memory) {
+          const m = sys.memory;
+          bar += `<div class="sys-item"><span class="label">内存</span><span class="val">${m.used}/${m.total}</span></div>`;
+        }
+        if (sys.disk) {
+          const d = sys.disk;
+          bar += `<div class="sys-item"><span class="label">磁盘</span><span class="val">${d.free} 可用</span></div>`;
+        }
+        document.getElementById('sysBar').innerHTML = bar;
+        document.getElementById('hostname').textContent = sys.hostname;
+      }
+      return;
+    }
+  } catch(e) {}
+  // Fallback JSON
+  try {
+    const resp = await fetch('projects.json');
+    if (resp.ok) {
+      const data = await resp.json();
+      allProjects = data.projects || [];
+      render('all');
+      return;
+    }
+  } catch(e) {}
+  allProjects = [];
+  render('all');
+}
+
+scan();
+</script>
+</body>
+</html>

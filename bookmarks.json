@@ -1,0 +1,22 @@
+[
+  {
+    "name": "电子书下载宝库",
+    "icon": "📚",
+    "status": "web",
+    "desc": "12.7k Stars · 樊登读书/微信读书等电子书下载",
+    "stack": "Web",
+    "github": "https://github.com/jbiaojerry/ebook-treasure-chest",
+    "webUrl": "https://jbiaojerry.github.io/ebook-treasure-chest/",
+    "stars": "12,740"
+  },
+  {
+    "name": "AiToEarn",
+    "icon": "💰",
+    "status": "web",
+    "desc": "20.4k Stars · AI内容营销全链路自动化",
+    "stack": "TypeScript",
+    "github": "https://github.com/yikart/AiToEarn",
+    "webUrl": "https://aitoearn.cn",
+    "stars": "20,352"
+  }
+]
