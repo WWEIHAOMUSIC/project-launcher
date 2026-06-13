@@ -333,16 +333,24 @@ function render(category) {
       const gh = p.github.replace('.git','');
       actions += `<a class="abtn abtn-gh" href="${gh}" target="_blank">GitHub ↗</a>`;
     }
-    if (p.path && p.path.startsWith('/Applications/')) {
-      const appName = p.path.replace('/Applications/','').replace('.app','');
-      if (appName === 'Docker') {
-        actions += `<button class="abtn abtn-primary" onclick="runApp('${p.path}')">▶ 启动 Docker</button>`;
-      } else {
-        actions += `<a class="abtn" href="${p.path}">打开 App</a>`;
+    if (p.path) {
+      if (p.path.startsWith('/Applications/')) {
+        const appName = p.path.replace('/Applications/','').replace('.app','');
+        if (appName === 'Docker') {
+          actions += `<button class="abtn abtn-primary" onclick="runApp('${p.path}')">▶ 启动 Docker</button>`;
+        } else {
+          actions += `<a class="abtn" href="${p.path}">打开 App</a>`;
+        }
+      } else if (p.path.endsWith('.lnk') || p.path.endsWith('.url')) {
+        actions += `<button class="abtn abtn-primary" onclick="runApp('${p.path}')">▶ 打开</button>`;
       }
     }
     if (p.category === 'git' && p.port && !p.running) {
-      actions += `<button class="abtn abtn-red" onclick="alert('请在终端手动启动此项目')">▶ 启动</button>`;
+      if (p.name === 'ai-goofish-monitor') {
+        actions += `<button class="abtn abtn-red" onclick="runDocker()">▶ 启动</button>`;
+      } else {
+        actions += `<button class="abtn abtn-red" onclick="alert('请在终端手动启动此项目')">▶ 启动</button>`;
+      }
     }
 
     return `
@@ -363,6 +371,10 @@ function render(category) {
 
 function runApp(appPath) {
   fetch('/api/launch?app=' + encodeURIComponent(appPath));
+}
+
+function runDocker() {
+  fetch('/api/launch?docker=' + encodeURIComponent('ai-goofish-monitor'));
 }
 
 async function scan() {
